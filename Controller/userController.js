@@ -58,5 +58,68 @@ const logfun = async (req, res) => {
     }
 
 }
+const userauth = async (req, res) => {
+    const user = req.user;
+    console.log(user);
+    if (user && user.useremail) {
+        try {
+            const userinfo = await useraccounts.findOne({ email: user.useremail });
+            if (userinfo) {
+                res.send({ msg: "User Authorized", userdata: userinfo })
+            }
+            else {
+                res.status(404).send("User not found");
+            }
+        }
+        catch (err) {
+            console.log("Error fetching user detail from db:", err);
+        }
+    }
+    console.log("user authorized!");
+}
 
-module.exports = { regfun, logfun };
+const storeCoursesBought = async (req, res) => {
+    const { cartData, userData } = req.body;
+
+    try {
+        // Find the user account based on the email
+        let userAccount = await useraccounts.findOne({ email: userData });
+
+        if (!userAccount) {
+            // If user doesn't exist, create a new user with the bought courses
+            userAccount = new useraccounts({
+                email: userData,
+                boughtCourses: cartData,
+            });
+
+            await userAccount.save();
+        } else {
+            // If user exists, add the new courses to the existing boughtCourses array
+            userAccount.boughtCourses = [...userAccount.boughtCourses, ...cartData];
+            await userAccount.save();
+        }
+
+        res.status(200).json({ msg: 'Courses bought and stored successfully' });
+    } catch (error) {
+        console.error('Error storing courses bought:', error);
+        res.status(500).json({ msg: 'Internal server error' });
+    }
+};
+
+const getBoughtCourses = async (req, res) => {
+    const userID = req.query.userID;
+    try {
+        const user = await useraccounts.findOne({ email: userID });
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+        const boughtCourses = user.boughtCourses || [];
+
+        return res.status(200).json({ success: true, boughtCourses });
+    } catch (error) {
+        console.error('Error fetching bought courses:', error);
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+}
+module.exports = { regfun, logfun, userauth, storeCoursesBought, getBoughtCourses };

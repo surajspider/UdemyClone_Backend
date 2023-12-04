@@ -12,7 +12,10 @@ const userSchema = mongoose.Schema({
     pass: {
         type: String,
         required: true
-    }
+    },
+    boughtCourses: [
+
+    ]
 });
 
 const useraccounts = mongoose.model("useraccounts", userSchema);

@@ -1088,10 +1088,10 @@ const data = [
     {
         "id": 69,
         "courseName": "The Complete Cyber Security Course : Hackers Exposed!",
-        "image": "Nathan House",
-        "creator": "https://img-c.udemycdn.com/course/240x135/614772_233b_9.jpg",
+        "image": "https://img-c.udemycdn.com/course/240x135/614772_233b_9.jpg",
+        "creator": "Nathan House",
         "category": "IT & Software",
-        "subcategory": "Network & Security",
+        "subcategory": "Hardware",
         "rating": 4.5,
         "hrs": 12,
         "lectures": 124,
